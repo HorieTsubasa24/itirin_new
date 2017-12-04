@@ -14,7 +14,7 @@ public class Title : MonoBehaviour {
     {
         GSM.ChangeToGameMode("Game", () => {
             wavedraw.gameMode = WaveDraw.GameMode.Game;
-            wavedraw.OnEnable();
+            wavedraw.InitOnWitter();
         });
     }
     

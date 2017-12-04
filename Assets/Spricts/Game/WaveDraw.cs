@@ -8,12 +8,14 @@ using DG.Tweening;
 /// </summary>
 public class WaveDraw : MonoBehaviour
 {
+	public AudioContainer audioctl;
+	public List<Gimic> gimics;
     public Transform Tr_Combine;
 
     public int NumOfLaps = 0;
     public int nowstage = 1;
-
     int refStageTemplate = 0;
+
     /// <summary>
     /// ステージテンプレート
     /// 1:Wave 2:Bezire 3:Square
@@ -171,21 +173,35 @@ public class WaveDraw : MonoBehaviour
     public Sprite sp_Change;
     
 
-    public void OnEnable()
+    public void Start()
     {
-        nowstage = 1;
-        rand = new System.Random();
-        Gc = 0;
-        Tr_Combine.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
+		InitOnWitter();
     }
 
+	public void InitOnWitter()
+	{
+		rand = new System.Random();
+
+		gimics.Clear();
+		gimics.Add(GameObject.Find("star").GetComponent<Gimic>());
+		nowstage = 1;
+		refStageTemplate = 0;
+
+		Gc = 0;
+	}
 
     /// <summary>
     /// 物理計算を伴うので、FixedUpdateを使用
     /// </summary>
     private void FixedUpdate()
     {
-        // return;
+		for (int i = 0; i < gimics.Count; i++)
+		{
+			if (gimics[i] != null)
+				gimics[i].Move();
+			else
+				gimics.Remove(gimics[i]);
+		}// return;
         /*
         if (!t)
         {
@@ -288,7 +304,12 @@ public class WaveDraw : MonoBehaviour
     {
         var n = stage[nowstage, refStageTemplate];
         refStageTemplate = (refStageTemplate < stage.GetLength(nowstage) - 1) ? refStageTemplate + 1 : 0;
-        print(n);
-        return n;
+		if (refStageTemplate == 0)
+		{
+			nowstage = (nowstage >= stage.Length) ? 0 : nowstage++;
+			audioctl.AudioChange();
+		}
+		print(n);
+		return n;
     }
 }

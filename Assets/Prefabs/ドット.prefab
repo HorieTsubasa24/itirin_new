@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212838695872120790}
   - component: {fileID: 114432411366072930}
   m_Layer: 0
-  m_Name: "\u30C9\u30C3\u30C8"
+  m_Name: "\u30C8\u3099\u30C3\u30C8"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
