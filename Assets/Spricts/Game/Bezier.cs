@@ -8,6 +8,8 @@ using System;
 /// </summary>
 public class Bezier : MonoBehaviour
 {
+    readonly float wavespan = 0.14f;
+
     /// <summary>
     /// 最大の高さ
     /// </summary>
@@ -66,19 +68,56 @@ public class Bezier : MonoBehaviour
         return vec;
     }
 
-    Vector2[] GetBezierLine(int refmax, Vector2 wtvec, float beforeheight)
+    /// <summary>
+    /// ランダム制御点設定
+    /// </summary>
+    /// <returns></returns>
+    public Vector2[] RandomPointSet(int Width, float HeightSwingWidth)
     {
-        print(wtvec.y);
+        Vector2[] vec = new Vector2[4];
 
-        // 分割数
-        int DivNum = 0;
+        var high = HeightSwingWidth * rand.Next(0, 100) * 0.01f;
+        var low = HeightSwingWidth * rand.Next(0, 100) * 0.01f;
 
+        vec[0] = new Vector2(0, 0);
+        vec[1] = new Vector2(0, low);
+        vec[2] = new Vector2(Width, high);
+        vec[3] = new Vector2(Width, low);
+
+        return vec;
+    }
+
+    /// <summary>
+    /// このクラスから呼ばれるGetBezierLine
+    /// </summary>
+    /// <param name="refmax"></param>
+    /// <param name="wtvec"></param>
+    /// <param name="beforeheight"></param>
+    /// <returns></returns>
+    Vector2[] GetBezierLine(Vector2 wtvec, float beforeheight)
+    {
         Vector2[] points = RandomPointSet(beforeheight);
 
         // 分割数
-        DivNum = (int)(((points[2].x > points[3].x) ? points[2].x : points[3].x - points[0].x));
+        int DivNum = (int)(((points[2].x > points[3].x) ? points[2].x : points[3].x - points[0].x));
         if (DivNum > BezierWidthScale) DivNum = BezierWidthScale;
         else if (DivNum < BezierWidthScaleLow) DivNum += BezierWidthScaleLow;
+
+        return GetBezierLineCommon(DivNum, points, beforeheight);
+    }
+
+    /// <summary>
+    /// 外部からDivNumを指定して描画
+    /// </summary>
+    /// <param name="Width"></param>
+    /// <param name="points"></param>
+    /// <param name="beforeheight"></param>
+    /// <returns></returns>
+    public Vector2[] GetBezierLine(int Width, float HeightSwingWidth, float beforeheight)
+    {
+        // 分割数
+        int DivNum = Width;
+        Vector2[] points = RandomPointSet(Width, HeightSwingWidth);
 
         Vector2[] curve = new Vector2[DivNum];
         curve = BezierCurveCreate(points, DivNum);
@@ -94,7 +133,30 @@ public class Bezier : MonoBehaviour
 
 
     /// <summary>
-    /// ベジェ描画
+    /// ベジェ描画共通部
+    /// </summary>
+    /// <param name="DivNum"></param>
+    /// <param name="points"></param>
+    /// <param name="beforeheight"></param>
+    /// <returns></returns>
+    public Vector2[] GetBezierLineCommon(int DivNum, Vector2[] points, float beforeheight)
+    {
+        Vector2[] curve = new Vector2[DivNum];
+        curve = BezierCurveCreate(points, DivNum);
+
+        float fixvec = beforeheight - curve[0].y;
+        for (int i = 0; i < curve.Length; i++)
+        {
+            curve[i].y += fixvec;
+        }
+
+        return curve;
+    }
+
+    
+    
+    /// <summary>
+    /// ベジェ描画(WaveWritter)
     /// </summary>
     /// <returns></returns>
     public float[] BezierDraw(int Refmax, float writter_y)
@@ -109,7 +171,7 @@ public class Bezier : MonoBehaviour
         // Refmax分の長さのベジェ曲線を1つ以上生成する。
         while (Embedded < curve.Length)
         {
-            Vector2[] beziercurve = GetBezierLine(Refmax, bezierwrittervec, beforeheight);
+            Vector2[] beziercurve = GetBezierLine(bezierwrittervec, beforeheight);
 
             for (int i = 0; i < beziercurve.Length; i++)
             {

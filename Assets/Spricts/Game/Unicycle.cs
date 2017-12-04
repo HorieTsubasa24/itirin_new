@@ -287,8 +287,8 @@ public class Unicycle : MonoBehaviour
         }
 
 
-        print("diff" + vecdiff);
-        print("hvec" + hvec);
+        //print("diff" + vecdiff);
+        //print("hvec" + hvec);
 
         if (isCollidDirection != 1)
             gameObject.transform.position = hvec;// 計算用の値を実座標に代入

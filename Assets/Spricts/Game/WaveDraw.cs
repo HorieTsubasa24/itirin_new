@@ -10,24 +10,28 @@ public class WaveDraw : MonoBehaviour
 {
     public Transform Tr_Combine;
 
+    public int NumOfLaps = 0;
+    public int nowstage = 1;
+
     int refStageTemplate = 0;
     /// <summary>
     /// ステージテンプレート
     /// 1:Wave 2:Bezire 3:Square
     /// </summary>
     static int[, ] stage = { { 1, 2, 3, 2, 1, 3, 3, 2, 1, 2, 3, 1, 2, 3, 2, 1, 3, 3, 2, 1, 2, 3 },
-                            { 3, 3, 2, 1, 3, 1, 3, 1, 3, 2, 3, 3 ,2 ,1 ,3 ,2 ,1 ,3 ,1 ,2 ,3 ,2 },
+                            { 3, 1, 2, 1, 3, 1, 3, 1, 3, 2, 3, 3 ,2 ,1 ,3 ,2 ,1 ,3 ,1 ,2 ,3 ,2 },
                             { 2, 2, 3, 2, 1, 3, 3, 2, 2, 2, 3, 2, 2, 3, 2, 1, 3, 3, 2, 1, 2, 3 },
-                            { 3, 2, 1, 3, 3, 3, 3, 2, 1, 2, 1, 1, 2, 2, 3, 1, 2, 1, 1, 2 ,1, 3 },
+                            { 1, 2, 1, 3, 3, 3, 3, 2, 1, 2, 1, 1, 2, 2, 3, 1, 2, 1, 1, 2 ,1, 3 },
                             { 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 2, 3, 1, 1, 2, 2, 1, 2, 1, 1, 2, 3 },
                             { 3, 3, 1, 3, 1, 2, 3, 2, 1, 1, 2, 2, 3, 2, 1, 2, 2, 2, 2, 3, 1, 1 },
                             { 3, 2, 1, 2, 2, 3, 1, 1, 3, 3, 1, 3, 3, 2, 3, 1, 2, 3, 1, 3, 2, 1 },
-                            { 2, 2, 1, 3, 1, 2, 3, 1, 2, 2, 2, 1, 1, 1, 2, 3, 1, 3, 1, 1, 1, 1 },
+                            { 2, 2, 1, 3, 1, 2, 3, 1, 2, 2, 2, 1, 1, 1, 2, 3, 1, 3, 1, 3, 3, 1 },
                             };
 
     int refStageGimic = 0;
     /// <summary>
     /// ステージギミック
+    /// 1:enemy 2:warp ball 3:jump smasher 4:bridge 5:the falling table
     /// </summary>
     static int[, ] stagegimic = { { 1, 1, 3, 5, 4, 4, 4, 1, 3, 3, 1, 2, 2, 5, 1, 4, 1, 2, 1, 2, 2, 1, 4, 3 },
                                     { 3, 4, 1, 5, 5, 1, 3, 3, 4, 5, 3, 4, 5, 2, 2, 3, 4, 3, 4, 4, 1, 5, 3, 5 },
@@ -124,7 +128,7 @@ public class WaveDraw : MonoBehaviour
     /// <summary>
     /// 乱数の最大 + 1
     /// </summary>
-    public int maxDistance = 300;
+    public int maxDistance = 250;
     
     /// <summary>
     /// DotHeight[]の最大参照、乱数で取得
@@ -169,6 +173,7 @@ public class WaveDraw : MonoBehaviour
 
     public void OnEnable()
     {
+        nowstage = 1;
         rand = new System.Random();
         Gc = 0;
         Tr_Combine.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
@@ -197,13 +202,13 @@ public class WaveDraw : MonoBehaviour
         if (Distance == 0 || Nowref >= Distance)
         {
             Nowref = 0;
-            Distance = 1 + rand.Next() % (maxDistance - 1);
+            Distance = 1 + (int)(rand.Next(82, 100) * 0.01f * (maxDistance - 1));
 
             DotHeight = CurveDraw(Distance);
         }
 
         // 崖以外なら一つ前の座標に代入
-        if (vec_Writter.y != -10.0f) vec_BeforeWritter = vec_Writter;
+        if (vec_Writter.y > -6.0f) vec_BeforeWritter = vec_Writter;
         vec_Writter.y = DotHeight[Nowref];
 
         // 陸地生成
@@ -258,7 +263,8 @@ public class WaveDraw : MonoBehaviour
     /// </summary>
     float[] CurveDraw(int dis)
     {
-        switch (rand.Next(4))
+        var n = GetStage();
+        switch (n - 1)
         {
             case 0:
                 l_like = L_Likes.wave;
@@ -269,11 +275,20 @@ public class WaveDraw : MonoBehaviour
             case 2:
                 l_like = L_Likes.square;
                 return square.SquareDraw(dis, vec_BeforeWritter.y);
-            case 3:
-                l_like = L_Likes.square;
-                return square.SquareDraw(dis, vec_BeforeWritter.y);
             default:
                 return null;
         }
+    }
+
+    /// <summary>
+    /// ステージブロックをゲット更新
+    /// </summary>
+    /// <returns></returns>
+    int GetStage()
+    {
+        var n = stage[nowstage, refStageTemplate];
+        refStageTemplate = (refStageTemplate < stage.GetLength(nowstage) - 1) ? refStageTemplate + 1 : 0;
+        print(n);
+        return n;
     }
 }
