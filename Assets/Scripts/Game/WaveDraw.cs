@@ -248,6 +248,9 @@ public class WaveDraw : MonoBehaviour
 		}
 		else
 		{
+			vec_Writter.y = DotHeight[Nowref] + gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
+			unicycle.dotSpline[0] = vec_Writter.y;
+			print(unicycle.dotSpline[0]);
 			stageWait--;
 		}
 	    if (gameMode == GameMode.Game) Gc++;
@@ -342,7 +345,7 @@ public class WaveDraw : MonoBehaviour
 		print("Gimic" + n);
 		var ob = Instantiate(prefab_Gimics[n]);
 		var gim = ob.GetComponent<Gimic>();
-		gim.Init();
+		gim.Init(DotHeight[Nowref]);
 		gimics.Add(gim);
 		gimiccount = GimicTime;
 		stageWait = gim.Span;

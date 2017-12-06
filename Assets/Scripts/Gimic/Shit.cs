@@ -2,26 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shit : Gimic
+public class Shit : MonoBehaviour
 {
+	public int Hp = 1;
+	public Vector2 vec;
+
 	// Use this for initialization
-	public override void Init()
+	private void Start()
 	{
 		Hp = 1;
-		acs = new Vector2(0.0f, -0.001f);
-		vel = new Vector2(-0.031f, -0.1f);
 		vec = transform.position;
 	}
 
-	public override void Move()
-	{
-		vec += vel;
-		vel += acs;
-		transform.position = vec;
-	}
-
 	/// <summary>
-	/// 地面に着いたら消える
+	/// 自機に接触
 	/// </summary>
 	/// <param name="other"></param>
 	private void OnTriggerStay2D(Collider2D collision)

@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class Pigeon : Gimic {
 	public GameObject prefab_Droppings;
-	System.Random rand;
 	public readonly int DroppingSpan = 120;
 	public readonly int DroppingSpanBase = 40;
 
 	// Use this for initialization
-	public override void Init()
+	public override void Init(float height)
 	{
-		rand = new System.Random();
 		Hp = 1;
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.075f, 0.0f);
-		vec = transform.position;
+		vec = new Vector2(transform.position.x, height + 0.4f);
 	}
 
 	public override void Move()
@@ -34,7 +32,7 @@ public class Pigeon : Gimic {
 	{
 		if (droppingWait == 0)
 		{
-			Instantiate(prefab_Droppings);
+			Instantiate(prefab_Droppings, transform.position, Quaternion.identity);
 		}
 		else if(droppingWait == -1)
 		{
