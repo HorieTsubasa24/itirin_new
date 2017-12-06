@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212561440242135040}
   - component: {fileID: 50909175795537154}
   - component: {fileID: 68199145066383046}
+  - component: {fileID: 114301872424334362}
   m_Layer: 0
   m_Name: bridge
   m_TagString: Untagged
@@ -36,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1600793992165294}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 8.88, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,11 +78,30 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -3.2305555, y: -0.8249956}
-  - {x: -1.6463625, y: -0.953918}
-  - {x: -0.0042871237, y: -1.017777}
-  - {x: 1.765718, y: -0.9663315}
-  - {x: 3.268203, y: -0.8247634}
+  - {x: 0.058969855, y: -0.046409547}
+  - {x: 1.4521037, y: -0.17994249}
+  - {x: 3.084188, y: -0.242008}
+  - {x: 4.86853, y: -0.21284378}
+  - {x: 6.4020114, y: -0.06564212}
+--- !u!114 &114301872424334362
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1600793992165294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d20c922ddaca84d1a826006e969bbda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ob_unicycle: {fileID: 0}
+  unicycle: {fileID: 0}
+  Hp: 0
+  vec: {x: 0, y: 0}
+  vel: {x: 0, y: 0}
+  acs: {x: 0, y: 0}
+  rot: 0
+  Span: 0
 --- !u!212 &212561440242135040
 SpriteRenderer:
   m_ObjectHideFlags: 1

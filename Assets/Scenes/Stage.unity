@@ -366,6 +366,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioctl: {fileID: 1210563999}
+  prefab_Gimics:
+  - {fileID: 1908710097151238, guid: c8a49c42c52bd78458c0abecc5c89181, type: 2}
+  - {fileID: 1761823715489604, guid: 02670c19c6a6d0f44b97ade3e357c872, type: 2}
+  - {fileID: 1180396616802638, guid: e84b615e3e9196c4c8cc0a2f60a846af, type: 2}
+  - {fileID: 1600793992165294, guid: 410f69496da03d445a5a8a68d0a88782, type: 2}
+  - {fileID: 1338714081673402, guid: 9916ad0de85d6d345a1abcfa2843a36c, type: 2}
+  - {fileID: 1908710097151238, guid: c8a49c42c52bd78458c0abecc5c89181, type: 2}
   gimics: []
   Tr_Combine: {fileID: 309287820}
   NumOfLaps: 0
@@ -1587,6 +1594,7 @@ MonoBehaviour:
   isBeforeCollidDirection: 0
   BeforeVec: {x: 0, y: 0}
   defaultvec: {x: 0, y: 0}
+  Hp: 100
   vec: {x: 0, y: 0}
   vel: {x: 0, y: 0}
   acs: {x: 0, y: -0.01}

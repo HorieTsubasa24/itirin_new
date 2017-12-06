@@ -10,7 +10,9 @@ public abstract class Gimic : MonoBehaviour {
 	public Vector2 vel;
 	public Vector2 acs;
 	public float rot;
+	public int Span = 0;
 
+	public abstract void Init();
 	public abstract void Move();
 
 	private void Start()

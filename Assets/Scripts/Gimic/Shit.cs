@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Star : Gimic {
-
+public class Shit : Gimic
+{
 	// Use this for initialization
-	void Start () {
+	public override void Init()
+	{
 		Hp = 1;
-		acs = new Vector2(0.0f, -0.005f);
-		vel = new Vector2(-0.075f, 0.0f);
+		acs = new Vector2(0.0f, -0.001f);
+		vel = new Vector2(-0.031f, -0.1f);
 		vec = transform.position;
 	}
 
@@ -18,12 +19,13 @@ public class Star : Gimic {
 		vel += acs;
 		transform.position = vec;
 	}
+
 	/// <summary>
-	/// 地面に着いたら跳ねる
+	/// 地面に着いたら消える
 	/// </summary>
 	/// <param name="other"></param>
 	private void OnTriggerStay2D(Collider2D collision)
 	{
-		vel.y = -acs.y * 28;
+		Destroy(gameObject);
 	}
 }

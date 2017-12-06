@@ -66,6 +66,11 @@ public class Unicycle : MonoBehaviour
     /// </summary>
     public Vector2 defaultvec = new Vector2(0.0f, 0.0f);
 
+	/// <summary>
+	/// 体力
+	/// </summary>
+	public int Hp = 100;
+
     /// <summary>
     /// 一輪車の座標
     /// </summary>
@@ -129,6 +134,8 @@ public class Unicycle : MonoBehaviour
 
         DistFromDot = 0.0f;
         defaultvec = new Vector2(0.0f, 0.0f);
+
+		Hp = 100;
 
         vec = new Vector2(0.0f, 0.0f); 
         vel = new Vector2(0.0f, 0.0f);

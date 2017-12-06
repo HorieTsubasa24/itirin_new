@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 95342936075480496}
   - component: {fileID: 58141847149274588}
   - component: {fileID: 50266490419353844}
+  - component: {fileID: 114616639630817684}
   m_Layer: 0
   m_Name: bird
   m_TagString: Untagged
@@ -37,8 +38,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1908710097151238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 9.3, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -95,6 +96,27 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114616639630817684
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1908710097151238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c05883bcc1004c7897006577249bb80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ob_unicycle: {fileID: 0}
+  unicycle: {fileID: 0}
+  Hp: 0
+  vec: {x: 0, y: 0}
+  vel: {x: 0, y: 0}
+  acs: {x: 0, y: 0}
+  rot: 0
+  Span: 0
+  prefab_Droppings: {fileID: 1031639478602126, guid: 0fbe463d509c642a78b95618336899cc,
+    type: 2}
 --- !u!212 &212207618136973382
 SpriteRenderer:
   m_ObjectHideFlags: 1

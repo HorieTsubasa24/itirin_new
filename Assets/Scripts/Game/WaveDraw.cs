@@ -9,11 +9,12 @@ using DG.Tweening;
 public class WaveDraw : MonoBehaviour
 {
 	public AudioContainer audioctl;
+	public List<GameObject> prefab_Gimics;
 	public List<Gimic> gimics;
     public Transform Tr_Combine;
 
     public int NumOfLaps = 0;
-    public int nowstage = 1;
+    public int nowstage = 0;
     int refStageTemplate = 0;
 
     /// <summary>
@@ -30,7 +31,12 @@ public class WaveDraw : MonoBehaviour
                             { 2, 2, 1, 3, 1, 2, 3, 1, 2, 2, 2, 1, 1, 1, 2, 3, 1, 3, 1, 3, 3, 1 },
                             };
 
-    int refStageGimic = 0;
+	/// <summary>
+	/// ギミックの読み込み間隔
+	/// </summary>
+	public readonly int GimicTime = 300;
+	private int gimiccount = 0;
+    private int refStageGimic = 0;
     /// <summary>
     /// ステージギミック
     /// 1:enemy 2:warp ball 3:jump smasher 4:bridge 5:the falling table
@@ -127,6 +133,11 @@ public class WaveDraw : MonoBehaviour
     /// </summary>
     float[] DotHeight = new float[2000];
 
+	/// <summary>
+	/// ギミックを読み込んだ時のステージ読み込みウェイト
+	/// </summary>
+	int stageWait;
+
     /// <summary>
     /// 乱数の最大 + 1
     /// </summary>
@@ -153,7 +164,7 @@ public class WaveDraw : MonoBehaviour
     /// <summary>
     /// 点の移動速度
     /// </summary>
-    public int DotVelosity = 150;
+    public int DotVelosity = 350;
 
     /// <summary>
     /// カメラ、
@@ -183,9 +194,12 @@ public class WaveDraw : MonoBehaviour
 		rand = new System.Random();
 
 		gimics.Clear();
-		gimics.Add(GameObject.Find("star").GetComponent<Gimic>());
 		nowstage = 1;
 		refStageTemplate = 0;
+
+		gimiccount = 0;
+		refStageGimic = 0;
+		stageWait = 0;
 
 		Gc = 0;
 	}
@@ -195,25 +209,8 @@ public class WaveDraw : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-		for (int i = 0; i < gimics.Count; i++)
-		{
-			if (gimics[i] != null)
-				gimics[i].Move();
-			else
-				gimics.Remove(gimics[i]);
-		}// return;
-        /*
-        if (!t)
-        {
-            vec_Writter -= new Vector2(0, 0.1f);
-            if (vec_Writter.y < 0.5f) t = true;
-        }
-        else
-        {
-            vec_Writter += new Vector2(0, 0.1f);
-            if (vec_Writter.y > 3.5f) t = false;
-        }
-        */
+		GimicRoutine();
+
         // 曲線取り出し
         if (Distance == 0 || Nowref >= Distance)
         {
@@ -223,29 +220,37 @@ public class WaveDraw : MonoBehaviour
             DotHeight = CurveDraw(Distance);
         }
 
+		// ギミック取り出し
+		SetGimic();
+
         // 崖以外なら一つ前の座標に代入
         if (vec_Writter.y > -6.0f) vec_BeforeWritter = vec_Writter;
-        vec_Writter.y = DotHeight[Nowref];
 
-        // 陸地生成
-        var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
-        ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
+		// print(stageWait);
+		if (stageWait == 0)
+		{
+			vec_Writter.y = DotHeight[Nowref];
 
-        //ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity);
-        //ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
+			// 陸地生成
+			var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
+			ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
 
-        // 曲線をUnicycleに渡す
-        if (unicycle != null)
-        {
-            for (int i = unicycle.dotSpline.Length - 2; i >= 0; i--)
-                unicycle.dotSpline[i + 1] = unicycle.dotSpline[i];
+			// 曲線をUnicycleに渡す
+	        if (unicycle != null)
+	        {
+	            for (int i = unicycle.dotSpline.Length - 2; i >= 0; i--)
+	                unicycle.dotSpline[i + 1] = unicycle.dotSpline[i];
 
-            unicycle.dotSpline[0] = vec_Writter.y;
-        }
-
-        // ゲームスピードが早くなったらたまに配列の添字を一つ飛ばす。
-        Nowref = GetCurveRef(Nowref, Gc);
-        if (gameMode == GameMode.Game) Gc++;
+	            unicycle.dotSpline[0] = vec_Writter.y;
+	        }
+			// ゲームスピードが早くなったらたまに配列の添字を一つ飛ばす。
+	        Nowref = GetCurveRef(Nowref, Gc);
+		}
+		else
+		{
+			stageWait--;
+		}
+	    if (gameMode == GameMode.Game) Gc++;
     }
 
     /// <summary>
@@ -309,7 +314,53 @@ public class WaveDraw : MonoBehaviour
 			nowstage = (nowstage >= stage.Length) ? 0 : nowstage++;
 			audioctl.AudioChange();
 		}
-		print(n);
+        print("Stage" + n);
 		return n;
     }
+
+	/// <summary>
+	/// ステージギミックをゲット更新
+	/// </summary>
+	/// <returns></returns>
+	void SetGimic()
+	{
+		if (gameMode != GameMode.Game)
+			return;
+		
+		if (stageWait > 0)
+		{
+			return;
+		}
+		if (gimiccount > 0)
+		{
+			gimiccount--;
+			return;
+		}
+
+		var n = stagegimic[nowstage, refStageGimic];
+		refStageGimic = (refStageGimic < stagegimic.GetLength(nowstage) - 1) ? refStageGimic + 1 : 0;
+		print("Gimic" + n);
+		var ob = Instantiate(prefab_Gimics[n]);
+		var gim = ob.GetComponent<Gimic>();
+		gim.Init();
+		gimics.Add(gim);
+		gimiccount = GimicTime;
+		stageWait = gim.Span;
+		print("Aaaa" + stageWait);
+		return;
+	}
+
+	/// <summary>
+	/// ギミックのルーチン
+	/// </summary>
+	void GimicRoutine()
+	{
+		for (int i = 0; i < gimics.Count; i++)
+		{
+			if (gimics[i] != null)
+				gimics[i].Move();
+			else
+				gimics.Remove(gimics[i]);
+		}
+	}
 }
