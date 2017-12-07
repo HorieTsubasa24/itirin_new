@@ -10,7 +10,7 @@ public class Fire : Gimic
 		Hp = 3;
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.05f, 0.0f);
-		vec = new Vector2(transform.position.x, height);
+		vec = new Vector2(transform.position.x, height + 2.0f);
 	}
 
 	public override void Move()

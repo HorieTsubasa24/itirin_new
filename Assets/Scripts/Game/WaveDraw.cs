@@ -10,7 +10,8 @@ public class WaveDraw : MonoBehaviour
 {
 	public AudioContainer audioctl;
 	public List<GameObject> prefab_Gimics;
-	public List<Gimic> gimics;
+    public List<Gimic> gimics;
+    public List<GameObject> ob_gimics;
     public Transform Tr_Combine;
 
     public int NumOfLaps = 0;
@@ -196,12 +197,15 @@ public class WaveDraw : MonoBehaviour
 		gimics.Clear();
 		nowstage = 1;
 		refStageTemplate = 0;
-
+        vec_Writter.y = 0.0f;
 		gimiccount = 0;
 		refStageGimic = 0;
-		stageWait = 0;
+		stageWait = 200;
+        for (int i = 0; i < DotHeight.Length; i++)
+            DotHeight[i] = 0.0f;
 
-		Gc = 0;
+
+        Gc = 0;
 	}
 
     /// <summary>
@@ -209,19 +213,18 @@ public class WaveDraw : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
+        if (gameMode != GameMode.Game) return;
+
 		GimicRoutine();
+        // ギミック取り出し
+        SetGimic();
 
         // 曲線取り出し
         if (Distance == 0 || Nowref >= Distance)
         {
-            Nowref = 0;
-            Distance = 1 + (int)(rand.Next(82, 100) * 0.01f * (maxDistance - 1));
-
-            DotHeight = CurveDraw(Distance);
+            SplineGet();
         }
 
-		// ギミック取り出し
-		SetGimic();
 
         // 崖以外なら一つ前の座標に代入
         if (vec_Writter.y > -6.0f) vec_BeforeWritter = vec_Writter;
@@ -229,32 +232,68 @@ public class WaveDraw : MonoBehaviour
 		// print(stageWait);
 		if (stageWait == 0)
 		{
-			vec_Writter.y = DotHeight[Nowref];
-
-			// 陸地生成
-			var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
-			ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
-
-			// 曲線をUnicycleに渡す
-	        if (unicycle != null)
-	        {
-	            for (int i = unicycle.dotSpline.Length - 2; i >= 0; i--)
-	                unicycle.dotSpline[i + 1] = unicycle.dotSpline[i];
-
-	            unicycle.dotSpline[0] = vec_Writter.y;
-	        }
-			// ゲームスピードが早くなったらたまに配列の添字を一つ飛ばす。
-	        Nowref = GetCurveRef(Nowref, Gc);
-		}
+            SetTerrainNormal();
+        }
 		else
 		{
-			vec_Writter.y = DotHeight[Nowref] + gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
-			unicycle.dotSpline[0] = vec_Writter.y;
-			print(unicycle.dotSpline[0]);
+            // ギミックの陸地を読み込む
+            if (gimics.Count > 0)
+            {
+                print("gimics");
+                vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
+                if (stageWait == 1) SplineGet();
+                PassCurveToUnicycle();
+            }
+            else if (gimics.Count == 0) {
+                // オープニングの陸陸地生成
+                var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
+                ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
+                PassCurveToUnicycle();
+            }
 			stageWait--;
 		}
-	    if (gameMode == GameMode.Game) Gc++;
+	    Gc++;
     }
+
+    /// <summary>
+    /// 読み込んだ陸地セット
+    /// </summary>
+    void SetTerrainNormal()
+    { 
+        vec_Writter.y = DotHeight[Nowref];
+
+        // 陸地生成
+        var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
+        ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
+
+        PassCurveToUnicycle();
+
+        // ゲームスピードが早くなったらたまに配列の添字を一つ飛ばす。
+        Nowref = GetCurveRef(Nowref, Gc);
+    }
+
+
+    void SplineGet()
+    {
+        Nowref = 0;
+        Distance = 1 + (int)(rand.Next(82, 100) * 0.01f * (maxDistance - 1));
+
+        DotHeight = CurveDraw(Distance);
+    }
+
+
+    void PassCurveToUnicycle()
+    {
+        // 曲線をUnicycleに渡す
+        if (unicycle != null)
+        {
+            for (int i = unicycle.dotSpline.Length - 2; i >= 0; i--)
+                unicycle.dotSpline[i + 1] = unicycle.dotSpline[i];
+
+            unicycle.dotSpline[0] = vec_Writter.y;
+        }
+    }
+
 
     /// <summary>
     /// 曲線のドットを一つ飛ばすか飛ばさないか
@@ -345,13 +384,23 @@ public class WaveDraw : MonoBehaviour
 		print("Gimic" + n);
 		var ob = Instantiate(prefab_Gimics[n]);
 		var gim = ob.GetComponent<Gimic>();
-		gim.Init(DotHeight[Nowref]);
-		gimics.Add(gim);
-		gimiccount = GimicTime;
+		gim.Init(vec_Writter.y);
+        gimics.Add(gim);
+        ob_gimics.Add(ob);
+        gimiccount = GimicTime;
 		stageWait = gim.Span;
 		print("Aaaa" + stageWait);
 		return;
 	}
+
+    public void GimicDelete()
+    {
+        foreach (var a in ob_gimics)
+            Destroy(a);
+
+        ob_gimics.Clear();
+        gimics.Clear();
+    }
 
 	/// <summary>
 	/// ギミックのルーチン

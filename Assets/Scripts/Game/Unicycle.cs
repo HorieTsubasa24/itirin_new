@@ -12,6 +12,11 @@ public class Unicycle : MonoBehaviour
     public WaveDraw WD;
 
     /// <summary>
+    /// 初期位置
+    /// </summary>
+    public Vector3 InitPos;
+
+    /// <summary>
     /// 物理計算をする
     /// </summary>
     public bool isSimulate = true;
@@ -115,7 +120,7 @@ public class Unicycle : MonoBehaviour
 
     private void Init()
     {
-        gameObject.transform.position = new Vector3(2.29f, 0.0f);
+        gameObject.transform.position = InitPos;
 
         isSimulate = true;
 
@@ -130,7 +135,7 @@ public class Unicycle : MonoBehaviour
         BeforeVec = new Vector2();
 
         for (int i = 0; i < dotSpline.Length; i++)
-            dotSpline[i] = 0;
+            dotSpline[i] = 0.0f;
 
         DistFromDot = 0.0f;
         defaultvec = new Vector2(0.0f, 0.0f);
@@ -249,7 +254,7 @@ public class Unicycle : MonoBehaviour
 
         // 線形補間(DistanceFromDot - DotRefは小数点以下)
         var y = dotSpline[(int)DistFromDot];// + d * (DistanceFromDot - DotRef);
-        
+
         Vector2 befvec = vec;
         vec.y = y;/* + HeightPer2*/              // 基準の座標(地形)
 
@@ -263,35 +268,7 @@ public class Unicycle : MonoBehaviour
 
         // 段差を見る
         // 死亡判定
-        var cp = hvec.y - BeforeVec.y;
-        if (cp < -0.4f)
-        {
-            IsGroundCheck(true);
-            if (isJumped == false && IsGround == true)
-            {
-                ToFly();
-                hvec = hvec - vec + befvec;
-            }
-            return;
-        }
-        else if (cp > 0.6f)
-        {
-            var a = hvec - vec + befvec;
-            if (a.y < dotSpline[(int)DistFromDot + 2])
-            {
-                print("gameover");
-                GSM.ChangeToGameMode("Title", () => 
-                {
-                    WD.gameMode = WaveDraw.GameMode.Title;
-                    print("Title");
-                });
-            }
-            return;
-        }
-        else
-        {
-            IsGroundCheck(false);
-        }
+        if (CheckDead(befvec)) return;
 
 
         //print("diff" + vecdiff);
@@ -342,6 +319,42 @@ public class Unicycle : MonoBehaviour
         befvecs[befvecs.Length - 1] = gameObject.transform.position;
 
         BeforeVec = gameObject.transform.position;
+    }
+
+    bool CheckDead(Vector2 befvec)
+    {
+        var cp = hvec.y - BeforeVec.y;
+        if (cp < -0.4f)
+        {
+            IsGroundCheck(true);
+            if (isJumped == false && IsGround == true)
+            {
+                ToFly();
+                hvec = hvec - vec + befvec;
+            }
+            return true;
+        }
+        else if (cp > 0.6f)
+        {
+            var a = hvec - vec + befvec;
+            if (a.y < dotSpline[(int)DistFromDot + 2])
+            {
+                print("gameover");
+                WD.GimicDelete();
+                GSM.ChangeToGameMode("Title", () =>
+                {
+                    WD.gameMode = WaveDraw.GameMode.Title;
+                    transform.position = InitPos;
+                    print("Title");
+                });
+            }
+            return true;
+        }
+        else
+        {
+            IsGroundCheck(false);
+            return false;
+        }
     }
 
     /// <summary>

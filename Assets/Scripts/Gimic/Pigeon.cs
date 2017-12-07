@@ -13,7 +13,7 @@ public class Pigeon : Gimic {
 		Hp = 1;
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.075f, 0.0f);
-		vec = new Vector2(transform.position.x, height + 0.4f);
+		vec = new Vector2(transform.position.x, height + 4.0f);
 	}
 
 	public override void Move()
