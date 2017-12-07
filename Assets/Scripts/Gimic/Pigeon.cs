@@ -14,7 +14,8 @@ public class Pigeon : Gimic {
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.075f, 0.0f);
 		vec = new Vector2(transform.position.x, height + 4.0f);
-	}
+        transform.position = vec;
+    }
 
 	public override void Move()
 	{

@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shit : MonoBehaviour
+public class Syuriken : MonoBehaviour
 {
-	public int Hp = 1;
     public Vector2 acs;
     public Vector2 vel;
     public Vector2 vec;
     Unicycle unicycle;
 
-	// Use this for initialization
-	private void Start()
-	{
+    // Use this for initialization
+    private void Start()
+    {
         unicycle = GameObject.Find("Unicycle").GetComponent<Unicycle>();
-        Hp = 1;
         acs = new Vector2(0.0f, -0.001f);
         vel = new Vector2(-0.075f, 0.0f);
         vec = new Vector2(transform.position.x, transform.position.y + 0.5f);
         vec = transform.position;
-	}
+    }
 
     private void FixedUpdate()
     {
@@ -36,9 +34,9 @@ public class Shit : MonoBehaviour
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerStay2D(Collider2D collision)
-	{
+    {
         Destroy(gameObject);
-	}
+    }
 
     /// <summary>
     /// 自機に接触

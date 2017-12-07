@@ -237,7 +237,7 @@ public class WaveDraw : MonoBehaviour
 		else
 		{
             // ギミックの陸地を読み込む
-            if (gimics.Count > 0)
+            if (gimics.Count > 0 && gimics[gimics.Count - 1].Span > 0)
             {
                 print("gimics");
                 vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];

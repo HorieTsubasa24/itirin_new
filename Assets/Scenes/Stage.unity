@@ -374,6 +374,7 @@ MonoBehaviour:
   - {fileID: 1338714081673402, guid: 9916ad0de85d6d345a1abcfa2843a36c, type: 2}
   - {fileID: 1908710097151238, guid: c8a49c42c52bd78458c0abecc5c89181, type: 2}
   gimics: []
+  ob_gimics: []
   Tr_Combine: {fileID: 309287820}
   NumOfLaps: 0
   nowstage: 1

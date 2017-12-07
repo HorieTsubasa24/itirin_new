@@ -14,7 +14,8 @@ public class Bridge : Gimic
 		var rb = GetComponent<Rigidbody2D>();
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.14f, 0.0f);
-	}
+        transform.position = vec;
+    }
 
 	public override void Move()
 	{

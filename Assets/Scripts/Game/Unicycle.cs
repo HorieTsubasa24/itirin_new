@@ -340,13 +340,7 @@ public class Unicycle : MonoBehaviour
             if (a.y < dotSpline[(int)DistFromDot + 2])
             {
                 print("gameover");
-                WD.GimicDelete();
-                GSM.ChangeToGameMode("Title", () =>
-                {
-                    WD.gameMode = WaveDraw.GameMode.Title;
-                    transform.position = InitPos;
-                    print("Title");
-                });
+                Die();
             }
             return true;
         }
@@ -445,5 +439,28 @@ public class Unicycle : MonoBehaviour
         vecdiff = new Vector2(0.0f, 0.0f);
         jumpstart = new Vector2(0.0f, 0.0f);
         vel = new Vector2(0.0f, 0.0f);
+    }
+
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    public void Damage(int dam)
+    {
+        Hp -= dam;
+        if (Hp <= 0) Die();
+    }
+
+    /// <summary>
+    /// 死亡処理
+    /// </summary>
+    private void Die()
+    {
+        WD.GimicDelete();
+        GSM.ChangeToGameMode("Title", () =>
+        {
+            WD.gameMode = WaveDraw.GameMode.Title;
+            transform.position = InitPos;
+            print("Title");
+        });
     }
 }
