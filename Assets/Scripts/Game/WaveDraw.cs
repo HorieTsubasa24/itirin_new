@@ -239,13 +239,20 @@ public class WaveDraw : MonoBehaviour
             // ギミックの陸地を読み込む
             if (gimics.Count > 0 && gimics[gimics.Count - 1].Span > 0)
             {
-                print("gimics");
-                vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
+                try
+                {
+                    vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
+                }
+                catch
+                {
+                    print(gimics.Count - 1);
+                    print(gimics[gimics.Count - 1].Span - stageWait);
+                }
                 if (stageWait == 1) SplineGet();
                 PassCurveToUnicycle();
             }
             else if (gimics.Count == 0) {
-                // オープニングの陸陸地生成
+                // 序盤の陸陸地生成
                 var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
                 ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
                 PassCurveToUnicycle();
@@ -381,15 +388,19 @@ public class WaveDraw : MonoBehaviour
 
 		var n = stagegimic[nowstage, refStageGimic];
 		refStageGimic = (refStageGimic < stagegimic.GetLength(nowstage) - 1) ? refStageGimic + 1 : 0;
-		print("Gimic" + n);
+		// print("Gimic" + n);
 		var ob = Instantiate(prefab_Gimics[n]);
 		var gim = ob.GetComponent<Gimic>();
+
+        // 初期化
 		gim.Init(vec_Writter.y);
+
+        // リスト登録
         gimics.Add(gim);
         ob_gimics.Add(ob);
         gimiccount = GimicTime;
 		stageWait = gim.Span;
-		print("Aaaa" + stageWait);
+		// print("Aaaa" + stageWait);
 		return;
 	}
 

@@ -27,4 +27,14 @@ public class Star : Gimic {
 	{
 		vel.y = -acs.y * 28;
 	}
+
+    /// <summary>
+    /// 自機に接触
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "Unicycle")
+            unicycle.Damage(15);
+    }
 }

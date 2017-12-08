@@ -355,7 +355,7 @@ public class Unicycle : MonoBehaviour
     /// ジャンプの動作、重力計算
     /// </summary>
     /// <param name="jump"></param>
-    public void Jump(bool jump)
+    public void Jump(bool jump, int Multiply = 16)
     {
         if (jump == false)
         {
@@ -367,7 +367,7 @@ public class Unicycle : MonoBehaviour
         {
             isBeforeJump = true;
             ToFly();
-            vel = -acs * 16;   // スクリプト上のMathf.Abs(Asc)*16の加速度を一瞬を与えてジャンプ
+            vel = -acs * Multiply;   // スクリプト上のMathf.Abs(Asc)*16の加速度を一瞬を与えてジャンプ
             return;
         }
 
@@ -441,13 +441,30 @@ public class Unicycle : MonoBehaviour
         vel = new Vector2(0.0f, 0.0f);
     }
 
+    private readonly int mutekiTime = 90;
+    private int mutekiCount = 0;
     /// <summary>
     /// ダメージ処理
     /// </summary>
     public void Damage(int dam)
     {
+        if (mutekiCount > 0) return;
+
+        mutekiCount = mutekiTime;
+        StartCoroutine(mutekiCountDec());
+
         Hp -= dam;
         if (Hp <= 0) Die();
+    }
+
+    private IEnumerator mutekiCountDec()
+    {
+        while (mutekiCount > 0)
+        {
+            mutekiCount--;
+            yield return 0;
+        }
+        yield break;
     }
 
     /// <summary>

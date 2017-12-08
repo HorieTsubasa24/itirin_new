@@ -19,7 +19,6 @@ public abstract class Gimic : MonoBehaviour {
 
 	private void Start()
 	{
-		rand = new System.Random();
 		ob_unicycle = GameObject.Find("Unicycle");
 		unicycle = ob_unicycle.GetComponent<Unicycle>();
 	}

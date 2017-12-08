@@ -15,6 +15,7 @@ public class Pigeon : Gimic {
 		vel = new Vector2(-0.075f, 0.0f);
 		vec = new Vector2(transform.position.x, height + 4.0f);
         transform.position = vec;
+        rand = new System.Random();
     }
 
 	public override void Move()
