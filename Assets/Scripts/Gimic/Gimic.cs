@@ -13,6 +13,9 @@ public abstract class Gimic : MonoBehaviour {
 	public Vector2 acs;
 	public float rot;
 	public int Span = 0;
+    public Like like;
+    public enum Like
+    { Player, Enemy, Gimic}
 
 	public abstract void Init(float height);
 	public abstract void Move();

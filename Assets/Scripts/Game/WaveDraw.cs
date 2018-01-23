@@ -217,19 +217,18 @@ public class WaveDraw : MonoBehaviour
 
 		GimicRoutine();
         // ギミック取り出し
-        SetGimic();
+        if (gameMode == GameMode.Game)
+            SetGimic();
 
         // 曲線取り出し
         if (Distance == 0 || Nowref >= Distance)
-        {
             SplineGet();
-        }
 
 
         // 崖以外なら一つ前の座標に代入
         if (vec_Writter.y > -6.0f) vec_BeforeWritter = vec_Writter;
 
-		// print(stageWait);
+		// 陸地を一つずつ読み込む
 		if (stageWait == 0)
 		{
             SetTerrainNormal();
@@ -239,15 +238,7 @@ public class WaveDraw : MonoBehaviour
             // ギミックの陸地を読み込む
             if (gimics.Count > 0 && gimics[gimics.Count - 1].Span > 0)
             {
-                try
-                {
-                    vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
-                }
-                catch
-                {
-                    print(gimics.Count - 1);
-                    print(gimics[gimics.Count - 1].Span - stageWait);
-                }
+                vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
                 if (stageWait == 1) SplineGet();
                 PassCurveToUnicycle();
             }

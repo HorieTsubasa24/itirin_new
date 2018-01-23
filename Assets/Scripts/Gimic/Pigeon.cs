@@ -9,8 +9,9 @@ public class Pigeon : Gimic {
 
 	// Use this for initialization
 	public override void Init(float height)
-	{
-		Hp = 1;
+    {
+        like = Like.Enemy;
+        Hp = 1;
 		acs = new Vector2(0.0f, 0.0f);
 		vel = new Vector2(-0.075f, 0.0f);
 		vec = new Vector2(transform.position.x, height + 4.0f);
