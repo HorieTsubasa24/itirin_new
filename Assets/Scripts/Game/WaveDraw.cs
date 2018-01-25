@@ -19,6 +19,8 @@ public class WaveDraw : MonoBehaviour
 
     public int NumOfLaps = 0;
     public int nowstage = 0;
+    readonly int maxStage = 7;
+    readonly int maxStageTemp = 21;
     int refStageTemplate = 0;
 
     /// <summary>
@@ -197,6 +199,7 @@ public class WaveDraw : MonoBehaviour
 	public void InitOnWitter()
 	{
 		rand = new System.Random();
+        text.text = "";
 
         gimics.Clear();
         terraingimics.Clear();
@@ -222,7 +225,7 @@ public class WaveDraw : MonoBehaviour
 
 		GimicRoutine();
         // ギミック取り出し
-        if (gameMode == GameMode.Game && (Nowref < Distance && DotHeight[Nowref] > -4.0f))
+        if (gameMode == GameMode.Game && (Nowref < Distance && vec_BeforeWritter.y > -4.0f))
             SetGimic();
 
         // 曲線取り出し
@@ -353,10 +356,10 @@ public class WaveDraw : MonoBehaviour
     int GetStage()
     {
         var n = stage[nowstage, refStageTemplate];
-        refStageTemplate = (refStageTemplate < stage.GetLength(nowstage) - 1) ? refStageTemplate + 1 : 0;
+        refStageTemplate = (refStageTemplate < maxStageTemp) ? refStageTemplate + 1 : 0;
 		if (refStageTemplate == 0)
 		{
-			nowstage = (nowstage >= stage.Length) ? 0 : nowstage++;
+			nowstage = (nowstage < maxStage) ? nowstage + 1 : 0;
 			audioctl.AudioChange();
 		}
         print("Stage" + n);
@@ -370,9 +373,6 @@ public class WaveDraw : MonoBehaviour
 	/// <returns></returns>
 	void SetGimic()
 	{
-		if (gameMode != GameMode.Game)
-			return;
-		
 		if (stageWait > 0)
 		{
 			return;
@@ -388,9 +388,10 @@ public class WaveDraw : MonoBehaviour
 		// print("Gimic" + n);
 		var ob = Instantiate(prefab_Gimics[n]);
 		var gim = ob.GetComponent<Gimic>();
+        //UnityEditor.EditorApplication.isPaused = true;
 
         // 初期化
-		gim.Init(vec_Writter.y);
+        gim.Init(vec_Writter.y);
 
         // リスト登録
         if (n == 3 || n == 4)
@@ -407,7 +408,7 @@ public class WaveDraw : MonoBehaviour
 		stageWait = gim.Span;
         // print("Aaaa" + stageWait);
 
-        text.text = n.ToString();
+        //text.text = "";// n.ToString();
 
         return;
 	}
@@ -437,7 +438,7 @@ public class WaveDraw : MonoBehaviour
             if (gimics[i] != null)
                 gimics[i].Move();
             else
-                gimics.Remove(gimics[i]);
+                gimics.RemoveAt(i);
         }
 
         for (int i = 0; i < terraingimics.Count; i++)
@@ -445,7 +446,39 @@ public class WaveDraw : MonoBehaviour
             if (terraingimics[i] != null)
                 terraingimics[i].Move();
             else
-                terraingimics.Remove(terraingimics[i]);
+                terraingimics.RemoveAt(i);
         }
+    }
+
+    public void GimicObjectDelete(GameObject ob, Gimic gim)
+    {
+        if (ob.tag == "gimic")
+        {
+            ob_terraingimics.Remove(ob);
+            terraingimics.Remove(gim);
+        }
+        else
+        {
+            ob_gimics.Remove(ob);
+            gimics.Remove(gim);
+        }
+        Destroy(ob);
+    }
+
+    public void GimicObjectDelete(GameObject ob)
+    {
+        Gimic gim = ob.GetComponent<Gimic>();
+
+        if (ob.tag == "gimic")
+        {
+            ob_terraingimics.Remove(ob);
+            terraingimics.Remove(gim);
+        }
+        else
+        {
+            ob_gimics.Remove(ob);
+            gimics.Remove(gim);
+        }
+        Destroy(ob);
     }
 }

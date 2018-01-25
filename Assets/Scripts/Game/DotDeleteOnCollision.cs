@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DotDeleteOnCollision : MonoBehaviour {
+    public WaveDraw wd;
     /// <summary>
     /// 侵入したドットを削除
     /// </summary>
@@ -18,6 +19,9 @@ public class DotDeleteOnCollision : MonoBehaviour {
     /// <param name="collision"></param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(collision.gameObject);
+        if (collision.gameObject.tag == "dot")
+            Destroy(collision.gameObject);
+        else if (collision.gameObject.tag == "enemy" || collision.gameObject.tag == "gimic")
+           wd.GimicObjectDelete(collision.gameObject);
     }
 }

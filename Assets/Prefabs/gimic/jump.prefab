@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4766591700184006}
   - component: {fileID: 212280650060791552}
   - component: {fileID: 61079620990145194}
-  - component: {fileID: 50075766995397538}
+  - component: {fileID: 50965463341950750}
   - component: {fileID: 114225631136687142}
   m_Layer: 0
   m_Name: jump
@@ -43,7 +43,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50075766995397538
+--- !u!50 &50965463341950750
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 1
@@ -57,7 +57,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

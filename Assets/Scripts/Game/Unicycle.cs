@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 #if UNITY_EDITOR
@@ -12,6 +13,7 @@ public class Unicycle : MonoBehaviour
     public GameSceneManager GSM;
     public WaveDraw WD;
     public SoundSources sound;
+    public Slider hp_slider;
 
     /// <summary>
     /// 初期位置
@@ -467,12 +469,14 @@ public class Unicycle : MonoBehaviour
     {
         if (mutekiCount > 0) return;
 
-        EffekseerSystem.PlayEffect("hit_efk", transform.position);
+        Vector3 incv = new Vector3(0, 0.8f, 0);
+        EffekseerSystem.PlayEffect("hit_efk", transform.position + incv);
         sound.DamageSound();
         mutekiCount = mutekiTime;
         StartCoroutine(mutekiCountDec());
 
         Hp -= dam;
+        SliderFromHp();
         if (Hp <= 0) Die();
     }
 
@@ -504,5 +508,11 @@ public class Unicycle : MonoBehaviour
             transform.position = InitPos;
             print("Title");
         });
+    }
+
+
+    public void SliderFromHp()
+    {
+        hp_slider.value = Hp;
     }
 }

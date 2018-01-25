@@ -29,8 +29,9 @@ public class Fire : Gimic
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.name == "Unicycle")
+        {
             unicycle.Damage(30);
-
-        Destroy(gameObject);
+            wd.GimicObjectDelete(gameObject, this);
+        }
     }
 }

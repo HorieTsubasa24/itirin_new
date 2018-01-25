@@ -36,8 +36,9 @@ public class Star : Gimic {
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.name == "Unicycle")
+        {
             unicycle.Damage(15);
-
-        Destroy(gameObject);
+            wd.GimicObjectDelete(gameObject, this);
+        }
     }
 }

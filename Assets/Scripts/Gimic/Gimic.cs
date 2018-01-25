@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Gimic : MonoBehaviour {
 	protected System.Random rand;
 	public float[] heightline;
+    public WaveDraw wd;
 	public GameObject ob_unicycle;
 	public Unicycle unicycle;
 	public int Hp;
@@ -22,13 +23,15 @@ public abstract class Gimic : MonoBehaviour {
 
 	private void Start()
 	{
+        Hp = 1;
 		ob_unicycle = GameObject.Find("Unicycle");
-		unicycle = ob_unicycle.GetComponent<Unicycle>();
+        wd = GameObject.Find("SplineWitter").GetComponent<WaveDraw>();
+        unicycle = ob_unicycle.GetComponent<Unicycle>();
 	}
 
     public void Update()
     {
         if (Hp <= 0)
-            Destroy(gameObject);
+            wd.GimicObjectDelete(gameObject, this);
     }
 }

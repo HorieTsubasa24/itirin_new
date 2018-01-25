@@ -26,6 +26,7 @@ public class Bridge : Gimic
 		vec += vel;
 		vel += acs;
 		transform.position = vec;
-		if (vec.x < -30.0f) Destroy(gameObject);
+		if (vec.x < -30.0f)
+            Destroy(gameObject);
 	}
 }
