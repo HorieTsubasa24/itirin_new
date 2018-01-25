@@ -9,8 +9,10 @@ public class Syuriken : MonoBehaviour
     public Vector2 vec;
     Unicycle unicycle;
 
-    public int ThrowFlame = 35;
-    public int DestroyFlame = 60;
+    public int SyurikenForce = 1;
+
+    public int ThrowFlame = 15;
+    public int DestroyFlame = 30;
     public void Init(Unicycle uni, Vector2 vec1, Vector2 vec2)
     {
         float signx = Mathf.Sign(vec2.x);
@@ -58,7 +60,11 @@ public class Syuriken : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Unicycle")
-            unicycle.Damage(10);
+        if (collision.gameObject.tag == "enemy")
+        {
+            collision.gameObject.GetComponent<Gimic>().Hp -= SyurikenForce;
+            EffekseerSystem.PlayEffect("hit_efk", collision.gameObject.transform.position);
+            unicycle.sound.EnemyDamageSound();
+        }
     }
 }

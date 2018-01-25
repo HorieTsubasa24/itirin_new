@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using UnityEngine.EventSystems;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,6 +11,7 @@ public class Unicycle : MonoBehaviour
 {
     public GameSceneManager GSM;
     public WaveDraw WD;
+    public SoundSources sound;
 
     /// <summary>
     /// 初期位置
@@ -120,7 +122,11 @@ public class Unicycle : MonoBehaviour
 
     private void Init()
     {
+        EffekseerSystem.LoadEffect("hit_efk");
+        isDead = false;
+
         gameObject.transform.position = InitPos;
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         isSimulate = true;
 
@@ -154,12 +160,13 @@ public class Unicycle : MonoBehaviour
         vecdiff = new Vector2();
 
         hvec = new Vector2();
-}
+    }
 
+    bool isDead = false;
     // Update is called once per frame
     void FixedUpdate()
     {
-        Move();
+        Move(isDead);
 	}
 
 	/// <summary>
@@ -233,8 +240,10 @@ public class Unicycle : MonoBehaviour
     /// <summary>
     /// 動作全般
     /// </summary>
-    void Move()
+    void Move(bool dead)
     {
+        if (dead == true) return;
+
 		GetInput();
         
 
@@ -363,11 +372,13 @@ public class Unicycle : MonoBehaviour
             return;
         }
 
+
         if (isJumped == false)
         {
             isBeforeJump = true;
             ToFly();
             vel = -acs * Multiply;   // スクリプト上のMathf.Abs(Asc)*16の加速度を一瞬を与えてジャンプ
+            sound.JumpSound();
             return;
         }
 
@@ -376,6 +387,7 @@ public class Unicycle : MonoBehaviour
             isBeforeJump = true;
             vel = -acs * 16;   // スクリプト上のMathf.Abs(Asc)*16の加速度を一瞬を与えてジャンプ
             isJumped2nd = true;
+            sound.JumpSound();
         }
     }
 
@@ -411,6 +423,7 @@ public class Unicycle : MonoBehaviour
         }
     }
 
+    float BeforeVecDiff;
     /// <summary>
     /// 落下計算
     /// </summary>
@@ -420,10 +433,14 @@ public class Unicycle : MonoBehaviour
         jumpvec.y += vel.y;
         vel.y += acs.y;
 
+        BeforeVecDiff = vecdiff.y;
+
         // 着地
         if ((jumpvec.y + vecdiff.y) <= 0.0f)
         {
             Landing();
+            if (vecdiff.y != BeforeVecDiff)
+                sound.LandingSound();
         }
     }
 
@@ -450,6 +467,8 @@ public class Unicycle : MonoBehaviour
     {
         if (mutekiCount > 0) return;
 
+        EffekseerSystem.PlayEffect("hit_efk", transform.position);
+        sound.DamageSound();
         mutekiCount = mutekiTime;
         StartCoroutine(mutekiCountDec());
 
@@ -472,7 +491,13 @@ public class Unicycle : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        isDead = true;
+
+        EffekseerSystem.PlayEffect("hit_efk", transform.position);
+        sound.HitSound();
         WD.GimicDelete();
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 0);
+
         GSM.ChangeToGameMode("Title", () =>
         {
             WD.gameMode = WaveDraw.GameMode.Title;

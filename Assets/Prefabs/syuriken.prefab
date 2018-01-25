@@ -110,8 +110,8 @@ MonoBehaviour:
   acs: {x: 0, y: 0}
   vel: {x: 0, y: 0}
   vec: {x: 0, y: 0}
-  ThrowFlame: 35
-  DestroyFlame: 60
+  ThrowFlame: 15
+  DestroyFlame: 30
 --- !u!212 &212217351947005592
 SpriteRenderer:
   m_ObjectHideFlags: 1

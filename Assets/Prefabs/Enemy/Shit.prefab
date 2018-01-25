@@ -90,6 +90,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hp: 0
+  acs: {x: 0, y: 0}
+  vel: {x: 0, y: 0}
   vec: {x: 0, y: 0}
 --- !u!212 &212407039309446148
 SpriteRenderer:

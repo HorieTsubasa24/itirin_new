@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114225631136687142}
   m_Layer: 0
   m_Name: jump
-  m_TagString: Untagged
+  m_TagString: gimic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4812a8607f76d42638fea41986762321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heightline: []
   ob_unicycle: {fileID: 0}
   unicycle: {fileID: 0}
   Hp: 0
@@ -107,6 +108,7 @@ MonoBehaviour:
   acs: {x: 0, y: 0}
   rot: 0
   Span: 0
+  like: 0
 --- !u!212 &212280650060791552
 SpriteRenderer:
   m_ObjectHideFlags: 1

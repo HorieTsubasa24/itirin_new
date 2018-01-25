@@ -30,5 +30,7 @@ public class Fire : Gimic
     {
         if (collision.gameObject.name == "Unicycle")
             unicycle.Damage(30);
+
+        Destroy(gameObject);
     }
 }

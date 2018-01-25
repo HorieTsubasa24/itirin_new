@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 /// <summary>
@@ -12,6 +13,8 @@ public class WaveDraw : MonoBehaviour
 	public List<GameObject> prefab_Gimics;
     public List<Gimic> gimics;
     public List<GameObject> ob_gimics;
+    public List<Gimic> terraingimics;
+    public List<GameObject> ob_terraingimics;
     public Transform Tr_Combine;
 
     public int NumOfLaps = 0;
@@ -41,6 +44,7 @@ public class WaveDraw : MonoBehaviour
     /// <summary>
     /// ステージギミック
     /// 1:enemy 2:warp ball 3:jump smasher 4:bridge 5:the falling table
+    /// 3, 4は連続して出さない
     /// </summary>
     static int[, ] stagegimic = { { 1, 1, 3, 5, 4, 4, 4, 1, 3, 3, 1, 2, 2, 5, 1, 4, 1, 2, 1, 2, 2, 1, 4, 3 },
                                     { 3, 4, 1, 5, 5, 1, 3, 3, 4, 5, 3, 4, 5, 2, 2, 3, 4, 3, 4, 4, 1, 5, 3, 5 },
@@ -194,8 +198,9 @@ public class WaveDraw : MonoBehaviour
 	{
 		rand = new System.Random();
 
-		gimics.Clear();
-		nowstage = 1;
+        gimics.Clear();
+        terraingimics.Clear();
+        nowstage = 0;
 		refStageTemplate = 0;
         vec_Writter.y = 0.0f;
 		gimiccount = 0;
@@ -217,7 +222,7 @@ public class WaveDraw : MonoBehaviour
 
 		GimicRoutine();
         // ギミック取り出し
-        if (gameMode == GameMode.Game)
+        if (gameMode == GameMode.Game && (Nowref < Distance && DotHeight[Nowref] > -4.0f))
             SetGimic();
 
         // 曲線取り出し
@@ -236,13 +241,13 @@ public class WaveDraw : MonoBehaviour
 		else
 		{
             // ギミックの陸地を読み込む
-            if (gimics.Count > 0 && gimics[gimics.Count - 1].Span > 0)
+            if (terraingimics.Count > 0 && terraingimics[terraingimics.Count - 1].Span > 0)
             {
-                vec_Writter.y = gimics[gimics.Count - 1].heightline[gimics[gimics.Count - 1].Span - stageWait];
+                vec_Writter.y = terraingimics[terraingimics.Count - 1].heightline[terraingimics[terraingimics.Count - 1].Span - stageWait];
                 if (stageWait == 1) SplineGet();
                 PassCurveToUnicycle();
             }
-            else if (gimics.Count == 0) {
+            else if (terraingimics.Count == 0) {
                 // 序盤の陸陸地生成
                 var ob = Instantiate(prefab_Dot, vec_Writter, Quaternion.identity, Tr_Combine);
                 ob.GetComponent<Rigidbody2D>().AddForce(Vector3.left * DotVelosity, ForceMode2D.Force);
@@ -358,6 +363,7 @@ public class WaveDraw : MonoBehaviour
 		return n;
     }
 
+    public Text text;
 	/// <summary>
 	/// ステージギミックをゲット更新
 	/// </summary>
@@ -376,8 +382,8 @@ public class WaveDraw : MonoBehaviour
 			gimiccount--;
 			return;
 		}
-
-		var n = stagegimic[nowstage, refStageGimic];
+        
+        var n = stagegimic[nowstage, refStageGimic];
 		refStageGimic = (refStageGimic < stagegimic.GetLength(nowstage) - 1) ? refStageGimic + 1 : 0;
 		// print("Gimic" + n);
 		var ob = Instantiate(prefab_Gimics[n]);
@@ -387,12 +393,23 @@ public class WaveDraw : MonoBehaviour
 		gim.Init(vec_Writter.y);
 
         // リスト登録
-        gimics.Add(gim);
-        ob_gimics.Add(ob);
+        if (n == 3 || n == 4)
+        {
+            terraingimics.Add(gim);
+            ob_terraingimics.Add(ob);
+        }
+        else
+        {
+            gimics.Add(gim);
+            ob_gimics.Add(ob);
+        }
         gimiccount = GimicTime;
 		stageWait = gim.Span;
-		// print("Aaaa" + stageWait);
-		return;
+        // print("Aaaa" + stageWait);
+
+        text.text = n.ToString();
+
+        return;
 	}
 
     public void GimicDelete()
@@ -402,6 +419,12 @@ public class WaveDraw : MonoBehaviour
 
         ob_gimics.Clear();
         gimics.Clear();
+
+        foreach (var a in ob_terraingimics)
+            Destroy(a);
+
+        ob_terraingimics.Clear();
+        terraingimics.Clear();
     }
 
 	/// <summary>
@@ -409,12 +432,20 @@ public class WaveDraw : MonoBehaviour
 	/// </summary>
 	void GimicRoutine()
 	{
-		for (int i = 0; i < gimics.Count; i++)
-		{
-			if (gimics[i] != null)
-				gimics[i].Move();
-			else
-				gimics.Remove(gimics[i]);
-		}
-	}
+        for (int i = 0; i < gimics.Count; i++)
+        {
+            if (gimics[i] != null)
+                gimics[i].Move();
+            else
+                gimics.Remove(gimics[i]);
+        }
+
+        for (int i = 0; i < terraingimics.Count; i++)
+        {
+            if (terraingimics[i] != null)
+                terraingimics[i].Move();
+            else
+                terraingimics.Remove(terraingimics[i]);
+        }
+    }
 }

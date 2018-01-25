@@ -17,6 +17,13 @@ public class SyurikenSystem : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
                 ThrowSyuriken(touch.position);
         }
+
+        // 左ボタンクリック
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            ThrowSyuriken(mousePosition);
+        }
     }
 
     void ThrowSyuriken(Vector2 pos)

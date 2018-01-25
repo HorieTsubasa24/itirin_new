@@ -15,7 +15,6 @@ public class Shit : MonoBehaviour
 	{
         unicycle = GameObject.Find("Unicycle").GetComponent<Unicycle>();
         Hp = 1;
-        like = Like.Enemy;
         acs = new Vector2(0.0f, -0.001f);
         vel = new Vector2(-0.075f, 0.0f);
         vec = new Vector2(transform.position.x, transform.position.y + 0.5f);
@@ -49,5 +48,7 @@ public class Shit : MonoBehaviour
     {
         if (collision.gameObject.name == "Unicycle")
             unicycle.Damage(10);
+
+        Destroy(gameObject);
     }
 }

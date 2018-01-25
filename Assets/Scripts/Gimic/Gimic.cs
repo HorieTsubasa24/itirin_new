@@ -25,4 +25,10 @@ public abstract class Gimic : MonoBehaviour {
 		ob_unicycle = GameObject.Find("Unicycle");
 		unicycle = ob_unicycle.GetComponent<Unicycle>();
 	}
+
+    public void Update()
+    {
+        if (Hp <= 0)
+            Destroy(gameObject);
+    }
 }
